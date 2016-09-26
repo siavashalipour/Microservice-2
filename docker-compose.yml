@@ -1,0 +1,7 @@
+app:
+  image: ibmcom/swift-ubuntu
+  ports:
+    - "8090:8090"
+  volumes:
+    - .:/root/Microservice2
+  command: bash -c "make clean -C Microservice2 && make -C Microservice2 && Microservice2/.build/debug/Microservice2"
