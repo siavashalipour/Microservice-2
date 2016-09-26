@@ -1,0 +1,5 @@
+.build/*
+Packages/*
+Microservice2.xcodeproj/project.xcworkspace/xcuserdata/
+Microservice2.xcodeproj/xcuserdata/
+Microservice2.xcodeproj/
