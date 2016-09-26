@@ -12,6 +12,7 @@ import SwiftyJSON
 import LoggerAPI
 import CloudFoundryEnv
 import KituraNet
+import SimpleHttpClient
 
 public class Controller {
     
@@ -47,28 +48,50 @@ public class Controller {
         router.get("/service", handler: { (request, response, next) in
             var requestOptions: [ClientRequest.Options] = []
             requestOptions.append(.method("GET"))
-            requestOptions.append(.schema("https://"))
+            requestOptions.append(.schema("https"))
             requestOptions.append(.hostname("microservicesone.mybluemix.net"))
             requestOptions.append(.port(80))
             requestOptions.append(.path("/json"))
-            var headers = [String:String]()
+            //var headers = [String:String]()
             //headers["Accept"] = "application/json"
-            headers["Content-Type"] = "application/json; charset=utf-8"
-            requestOptions.append(.headers(headers))
-            let req = HTTP.request(requestOptions, callback: { (resp) in
-                if let resp = resp , resp.statusCode == HTTPStatusCode.OK {
-                    do {
-                        var body = Data()
-                        try resp.readAllData(into: &body)
-                        let jsonResponse = JSON(data: body)
-                        response.status(HTTPStatusCode.OK).send(json: jsonResponse)
-                    } catch _ {
-                        
-                    }
-                }
+            //headers["Content-Type"] = "application/json; charset=utf-8"
+           // requestOptions.append(.headers(headers))
+//            let session = URLSession.shared
+//            let url = URL(string: "https://microservicesone.mybluemix.net/json")
+//            let task = session.dataTask(with: url!, completionHandler: { (data, resp, err) in
+//                //if let resp = resp , resp.statusCode == HTTPStatusCode.OK {
+//                   // do {
+//                        //var body = Data()
+//                        //try resp.readAllData(into: &body)
+//                        let jsonResponse = JSON(data: data!)
+//                        response.status(HTTPStatusCode.OK).send(json: jsonResponse)
+//                   // } catch _ {
+//                
+//                    //}
+//                //}
+//            })
+//            task.resume()
+//            let req = HTTP.request(requestOptions, callback: { (resp) in
+//                if let resp = resp , resp.statusCode == HTTPStatusCode.OK {
+//                    do {
+//                        var body = Data()
+//                        try resp.readAllData(into: &body)
+//                        let jsonResponse = JSON(data: body)
+//                        response.status(HTTPStatusCode.OK).send(json: jsonResponse)
+//                    } catch _ {
+//                        
+//                    }
+//                }
+//                next()
+//            })
+//            req.end()
+            let resource = HttpResource.init(schema: "https", host: "microservicesone.mybluemix.net", port: nil, path: "/json")
+            HttpClient.get(resource: resource, headers: nil, completionHandler: { (erro, int, dic, data) in
+                let jsonResponse = JSON(data: data!)
+                response.status(HTTPStatusCode.OK).send(json: jsonResponse)
                 next()
+
             })
-            req.end()
         })
     }
     
